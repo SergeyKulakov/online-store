@@ -1,0 +1,24 @@
+diff --git a/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.d.ts b/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.d.ts
+index 3626d2b..743f3e8 100644
+--- a/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.d.ts
++++ b/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.d.ts
+@@ -5,6 +5,7 @@ import { IntegrationContainer } from '@brandingbrand/util-domain-state';
+ import type { CreateRoutes } from './create-routes.types';
+ import { ExternalRoutesOptions } from './external-routes.factory';
+ export interface CreateAppConfig extends Omit<AppConfig, 'router'> {
++    preLaunch?: () => Promise<void>;
+     appId: string;
+     remote: NonNullable<AppConfig['remote']>;
+     router: {
+diff --git a/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.js b/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.js
+index b380909..20ede7d 100644
+--- a/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.js
++++ b/node_modules/@brandingbrand/fsbuilder/src/create-app.factory.js
+@@ -16,6 +16,7 @@ import { nativeRoutes } from './lib/native-routes';
+ import { AppBuilderService, APP_BUILDER_TOKEN, FONT_SERVICE_TOKEN } from './services';
+ export const bootstrapCreateApp = (config) => __awaiter(void 0, void 0, void 0, function* () {
+     var _a, _b, _c;
++    yield config.preLaunch();
+     const store = new Store(createInitialGlobalState());
+     const { StoreProvider } = yield import('@brandingbrand/react-cargo-hold');
+     const api = new FSNetwork(config.remote);

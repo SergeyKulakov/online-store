@@ -1,0 +1,16 @@
+diff --git a/node_modules/@leanplum/react-native-sdk/ios/Leanplum.swift b/node_modules/@leanplum/react-native-sdk/ios/Leanplum.swift
+index 576f077..c5c8b4f 100644
+--- a/node_modules/@leanplum/react-native-sdk/ios/Leanplum.swift
++++ b/node_modules/@leanplum/react-native-sdk/ios/Leanplum.swift
+@@ -87,6 +87,11 @@ class RNLeanplum: RCTEventEmitter {
+         Leanplum.start()
+     }
+ 
++    @objc
++    func hasStarted(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
++        resolve(Leanplum.hasStarted())
++    }
++
+     @objc
+     func track(_ event: String, params: NSDictionary) {
+         guard let parametersDict = params as? Dictionary<String, Any> else {

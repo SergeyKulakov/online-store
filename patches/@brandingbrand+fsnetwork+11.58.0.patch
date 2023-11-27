@@ -1,0 +1,122 @@
+diff --git a/node_modules/@brandingbrand/fsnetwork/src/index.d.ts b/node_modules/@brandingbrand/fsnetwork/src/index.d.ts
+index a423221..b8f7b13 100644
+--- a/node_modules/@brandingbrand/fsnetwork/src/index.d.ts
++++ b/node_modules/@brandingbrand/fsnetwork/src/index.d.ts
+@@ -12,6 +12,8 @@ export declare type FSNetworkError = AxiosError;
+ export interface FSNetworkRequestConfig extends AxiosRequestConfig {
+     responseIntercept?: (response: AxiosResponse) => AxiosResponse;
+     responseError?: (error: FSNetworkError) => FSNetworkError;
++    requestIntercept?: (request: AxiosRequestConfig) => Proimse<AxiosRequestConfig>;
++    requestError?: (error: FSNetworkError) => FSNetworkError;
+ }
+ /**
+  * A promise of a response from the network.
+@@ -33,8 +35,8 @@ export declare type FSNetworkRequestData = ArrayBuffer | ArrayBufferView | Recor
+  * Manages network requests, optionally adding a set of default configuration to each request.
+  */
+ export declare class FSNetwork {
+-    private instance;
+-    private interceptor?;
++    instance;
++    interceptor?;
+     /**
+      * Creates a new instance of FSNetwork.
+      *
+diff --git a/node_modules/@brandingbrand/fsnetwork/src/index.js b/node_modules/@brandingbrand/fsnetwork/src/index.js
+index b7ddf46..4399c1d 100644
+--- a/node_modules/@brandingbrand/fsnetwork/src/index.js
++++ b/node_modules/@brandingbrand/fsnetwork/src/index.js
+@@ -1,5 +1,4 @@
+ import { __rest } from "tslib";
+-/* eslint-disable @typescript-eslint/promise-function-async */
+ import axios from 'axios';
+ /**
+  * Manages network requests, optionally adding a set of default configuration to each request.
+@@ -12,7 +11,7 @@ export class FSNetwork {
+      */
+     constructor(config) {
+         if (config) {
+-            const { responseIntercept, responseError } = config, axiosConfig = __rest(config, ["responseIntercept", "responseError"]);
++            const { responseError, responseIntercept, requestIntercept, requestError } = config, axiosConfig = __rest(config, ["responseError", "responseIntercept", "requestIntercept", "requestError"]);
+             this.instance = axios.create(axiosConfig);
+             this.setInterceptor(config);
+         }
+@@ -31,12 +30,15 @@ export class FSNetwork {
+         if (config && (config.responseIntercept || config.responseError)) {
+             this.interceptor = this.instance.interceptors.response.use(config.responseIntercept, config.responseError);
+         }
++        if (config && (config.requestIntercept || config.requestError)) {
++            this.instance.interceptors.request.use(config.requestIntercept, config.requestError);
++        }
+     }
+     /**
+      * Performs a generic request.
+      *
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     request(config) {
+         return this.instance.request(config);
+@@ -47,7 +49,7 @@ export class FSNetwork {
+      * @template T The response data type.
+      * @param uri A URI or path to request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     get(uri, config) {
+         // TODO: caching
+@@ -58,7 +60,7 @@ export class FSNetwork {
+      *
+      * @param uri A URI or path to request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     delete(uri, config) {
+         return this.instance.delete(uri, config);
+@@ -68,7 +70,7 @@ export class FSNetwork {
+      *
+      * @param uri A URI or path to request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     head(uri, config) {
+         return this.instance.head(uri, config);
+@@ -80,7 +82,7 @@ export class FSNetwork {
+      * @param uri A URI or path to request.
+      * @param data The body of the request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     post(uri, data, config) {
+         return this.instance.post(uri, data, config);
+@@ -92,7 +94,7 @@ export class FSNetwork {
+      * @param uri A URI or path to request.
+      * @param data The body of the request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     put(uri, data, config) {
+         return this.instance.put(uri, data, config);
+@@ -104,11 +106,14 @@ export class FSNetwork {
+      * @param uri A URI or path to request.
+      * @param data The body of the request.
+      * @param config Configuration for the request.
+-     * @returns A promise of the network response.
++     * @return A promise of the network response.
+      */
+     patch(uri, data, config) {
+         return this.instance.patch(uri, data, config);
+     }
+ }
++/**
++ * @deprecated use named export instead
++ */
+ export default FSNetwork;
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file

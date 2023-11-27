@@ -1,0 +1,133 @@
+diff --git a/node_modules/@brandingbrand/fsapp/src/beta-app/development/storage-manager.component.js b/node_modules/@brandingbrand/fsapp/src/beta-app/development/storage-manager.component.js
+index 263ff64..48eeb14 100644
+--- a/node_modules/@brandingbrand/fsapp/src/beta-app/development/storage-manager.component.js
++++ b/node_modules/@brandingbrand/fsapp/src/beta-app/development/storage-manager.component.js
+@@ -75,13 +75,17 @@ export default class CookieManger extends Component {
+             var _a;
+             SInfo.getAllItems((_a = this.props.sInfoOptions) !== null && _a !== void 0 ? _a : {})
+                 .then((values) => {
+-                if (!values || !values[0]) {
++                if (!values) {
+                     return alert('Nothing to be cleared.');
+                 }
+-                const keys = values[0].map((item) => item.key);
+-                Promise.all(values[0].map((entry) => __awaiter(this, void 0, void 0, function* () {
+-                    var _a;
+-                    return SInfo.deleteItem(entry.key, (_a = this.props.sInfoOptions) !== null && _a !== void 0 ? _a : { keychainService: entry.service });
++                let keys = [];
++                if (Platform.OS === 'ios') {
++                    keys = values[0].map((item) => item.key);
++                } else {
++                    keys = Object.keys(values);
++                }
++                Promise.all(keys.map((entry) => __awaiter(this, void 0, void 0, function* () {
++                    return SInfo.deleteItem(entry, this.props.sInfoOptions);
+                 })))
+                     .then(() => {
+                     alert(`Cleared: ${keys}`);
+@@ -91,7 +95,7 @@ export default class CookieManger extends Component {
+                 .catch((e) => console.log('cannot get all items from react-native-sensitive-info', e));
+         };
+         this.viewSensitiveInfo = () => {
+-            SInfo.getAllItems({})
++            SInfo.getAllItems(this.props.sInfoOptions)
+                 .then((values) => {
+                 this.showData(JSON.stringify(values, null, '  '));
+             })
+diff --git a/node_modules/@brandingbrand/fsapp/src/beta-app/router/history/history.js b/node_modules/@brandingbrand/fsapp/src/beta-app/router/history/history.js
+index 7bfc559..c28a743 100644
+--- a/node_modules/@brandingbrand/fsapp/src/beta-app/router/history/history.js
++++ b/node_modules/@brandingbrand/fsapp/src/beta-app/router/history/history.js
+@@ -1,4 +1,4 @@
+-import { __awaiter, __decorate, __metadata } from "tslib";
++import { __awaiter, __decorate, __metadata, __rest } from "tslib";
+ import { Linking, Platform } from 'react-native';
+ import { Navigation } from 'react-native-navigation';
+ import { boundMethod } from 'autobind-decorator';
+@@ -334,16 +334,15 @@ export class History {
+         return __awaiter(this, void 0, void 0, function* () {
+             const baseOptions = (matchingRoute, componentOptions, title, animationOptions) => {
+                 var _a;
+-                return ({
++                const { buttons, options } = componentOptions;
++                const _b = options !== null && options !== void 0 ? options : {}, { buttons: optButtons } = _b, restOptions = __rest(_b, ["buttons"]);
++                return {
+                     component: {
+                         name: matchingRoute.id,
+                         id: location.key,
+-                        options: {
+-                            animations: animationOptions,
+-                            topBar: Object.assign(Object.assign(Object.assign({ rightButtons: undefined, leftButtons: undefined }, matchingRoute.topBarStyle), componentOptions.buttons), { title: Object.assign(Object.assign({}, (_a = matchingRoute.topBarStyle) === null || _a === void 0 ? void 0 : _a.title), { text: title }) }),
+-                        },
++                        options: Object.assign({ animations: animationOptions, topBar: Object.assign(Object.assign(Object.assign(Object.assign({ rightButtons: undefined, leftButtons: undefined }, matchingRoute.topBarStyle), buttons), optButtons), { title: Object.assign(Object.assign({}, (_a = matchingRoute.topBarStyle) === null || _a === void 0 ? void 0 : _a.title), { text: title }) }) }, restOptions),
+                     },
+-                });
++                };
+             };
+             if (this.checkBlockers(location, action)) {
+                 return;
+diff --git a/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.d.ts b/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.d.ts
+index 248b2b9..4359ea4 100644
+--- a/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.d.ts
++++ b/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.d.ts
+@@ -5,8 +5,5 @@ export interface ScreenProps {
+ }
+ export declare const makeScreen: (Component: FC<ScreenProps>, options?: ScreenOptions | undefined) => {
+     (props: ScreenProps): import("react").ReactElement<any, any> | null;
+-    buttons: {
+-        rightButtons?: import("./types").ActionButton[] | undefined;
+-        leftButtons?: import("./types").ActionButton[] | undefined;
+-    } | undefined;
++    options: ScreenOptions | undefined;
+ };
+diff --git a/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.js b/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.js
+index 15e9a05..b374d42 100644
+--- a/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.js
++++ b/node_modules/@brandingbrand/fsapp/src/beta-app/router/make-screen.js
+@@ -1,6 +1,6 @@
+ export const makeScreen = (Component, options) => {
+     const route = (props) => Component(props);
+-    route.buttons = options === null || options === void 0 ? void 0 : options.buttons;
++    route.options = options;
+     return route;
+ };
+ //# sourceMappingURL=make-screen.js.map
+\ No newline at end of file
+diff --git a/node_modules/@brandingbrand/fsapp/src/beta-app/router/types.d.ts b/node_modules/@brandingbrand/fsapp/src/beta-app/router/types.d.ts
+index d899d09..a856636 100644
+--- a/node_modules/@brandingbrand/fsapp/src/beta-app/router/types.d.ts
++++ b/node_modules/@brandingbrand/fsapp/src/beta-app/router/types.d.ts
+@@ -1,6 +1,6 @@
+ import type FSNetwork from '@brandingbrand/fsnetwork';
+ import type { Analytics } from '@brandingbrand/fsengage';
+-import type { OptionsBottomTab, OptionsStatusBar, OptionsTopBar, OptionsTopBarButton, OptionsTopBarTitle } from 'react-native-navigation';
++import type { Options, OptionsBottomTab, OptionsStatusBar, OptionsTopBar, OptionsTopBarButton, OptionsTopBarTitle } from 'react-native-navigation';
+ import type { ParsedQs } from 'qs';
+ import type { ShellConfig } from '../shell.web';
+ import type { LocationDescriptorObject } from 'history';
+@@ -8,7 +8,7 @@ import { Component, ComponentType, FC } from 'react';
+ export declare type ActionButton = OptionsTopBarButton & {
+     onPress?: () => void;
+ };
+-export interface ScreenOptions {
++export interface ScreenOptions extends Omit<Partial<Options>, 'topBar' | 'animations'> {
+     buttons?: {
+         rightButtons?: ActionButton[];
+         leftButtons?: ActionButton[];
+@@ -30,11 +30,15 @@ export interface ScreenOptions {
+  */
+ export declare type ScreenFC = FC<{
+     componentId: string;
+-}> & ScreenOptions;
++}> & {
++    buttons?: ScreenOptions['buttons'],
++    options?: ScreenOptions;
++};
+ export declare abstract class ScreenComponent<State = {}> extends Component<{
+     componentId: string;
+ }, State> {
+     static buttons?: ScreenOptions['buttons'];
++    static options?: ScreenOptions;
+ }
+ export declare type ScreenComponentType = ScreenFC | typeof ScreenComponent;
+ export declare type Tab = OptionsBottomTab & {

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "228156264915",
+    "project_id": "assos-firebase",
+    "storage_bucket": "assos-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228156264915:android:42413efb98ed83a2849f26",
+        "android_client_info": {
+          "package_name": "com.assos.www"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228156264915-9m6nooic90ea1gr8sv5n0399vhmcg3lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl1mUklRL-8FUF6m1C2vlPzCKd7yyTlzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228156264915-9m6nooic90ea1gr8sv5n0399vhmcg3lb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "228156264915-iob5k8pj9cpej9e60qbol2to20pgcil8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.brandingbrand.assos",
+                "app_store_id": "125383204817661"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

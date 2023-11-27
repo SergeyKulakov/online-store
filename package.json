@@ -1,0 +1,139 @@
+{
+  "name": "@brandingbrand/assos",
+  "private": true,
+  "version": "1.0.0-rc.3",
+  "description": "Assos App - Engineering and designing cycling equipment and accessories for men and women since 1976",
+  "scripts": {
+    "add-keys-android": "node ./node_modules/@brandingbrand/flagship/src/add-keys-android-internal.js",
+    "add-keys-ios": "node ./node_modules/@brandingbrand/flagship/src/add-keys-ios-internal.js",
+    "compile-android": "react-native run-android --no-packager",
+    "compile-ios": "react-native run-ios --no-packager --simulator=\"iPhone 11 Pro\"",
+    "ios": "run-p start tsc:watch compile-ios",
+    "android": "run-p start tsc:watch compile-android",
+    "init": "./scripts/init.sh native",
+    "init:android": "./scripts/init.sh android",
+    "init:ios": "./scripts/init.sh ios",
+    "prepare": "tsc",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "tsc:watch": "tsc -w --preserveWatchOutput",
+    "lint": "tslint --project tsconfig.json",
+    "lint-staged": "lint-staged",
+    "postinstall": "patch-package"
+  },
+  "dependencies": {
+    "@brandingbrand/flagship": "^11.58.0",
+    "@brandingbrand/fsapp": "^11.58.0",
+    "@brandingbrand/fsbuilder": "^11.58.0",
+    "@brandingbrand/fscommerce": "^11.58.0",
+    "@brandingbrand/fscomponents": "^11.58.0",
+    "@brandingbrand/fsi18n": "^11.58.0",
+    "@brandingbrand/fsnetwork": "^11.58.0",
+    "@brandingbrand/polyfills": "^11.58.0",
+    "@brandingbrand/react-linker": "^11.58.0",
+    "@invertase/react-native-apple-authentication": "^2.2.1",
+    "@leanplum/react-native-sdk": "^1.2.1",
+    "@react-native-community/async-storage": "^1.9.0",
+    "@react-native-community/cli-platform-android": "^4.7.0",
+    "@react-native-community/cli-platform-ios": "^4.7.0",
+    "@react-native-community/picker": "^1.6.6",
+    "@react-native-community/push-notification-ios": "^1.0.0",
+    "@react-native-cookies/cookies": "6.2.0",
+    "@react-native-firebase/analytics": "^15.7.0",
+    "@react-native-firebase/app": "^15.7.0",
+    "@react-native-firebase/auth": "^15.7.0",
+    "@react-native-google-signin/google-signin": "^8.0.0",
+    "@sentry/react-native": "^3.2.11",
+    "babel-plugin-transform-imports": "^2.0.0",
+    "card-validator": "6.2.0",
+    "formik": "^2.1.5",
+    "jsc-android": "^241213.1.0",
+    "jwt-decode": "^3.1.2",
+    "lodash-es": "^4.17.10",
+    "moment": "^2.29.4",
+    "patch-package": "^6.4.7",
+    "react": "^16.13.1",
+    "react-content-loader": "^5.1.0",
+    "react-dom": "16.13.1",
+    "react-native": "^0.63.2",
+    "react-native-cache": "^2.0.1",
+    "react-native-device-info": "^5.0.0",
+    "react-native-dynamic-fonts": "^0.3.2",
+    "react-native-elements": "^2.0.2",
+    "react-native-fbsdk-next": "^10.1.0",
+    "react-native-fs": "^2.18.0",
+    "react-native-geolocation-service": "^5.3.1",
+    "react-native-gesture-handler": "^2.6.2",
+    "react-native-haptic-feedback": "1.10.0",
+    "react-native-html-parser": "^0.1.0",
+    "react-native-linear-gradient": "^2.5.6",
+    "react-native-localize": "^1.4.1",
+    "react-native-navigation": "^6.0.0",
+    "react-native-pager-view": "^5.4.25",
+    "react-native-permissions": "^2.2.0",
+    "react-native-picker-select": "^8.0.0",
+    "react-native-render-html": "^6.3.4",
+    "react-native-sensitive-info": "^5.5.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-tab-view": "^3.1.1",
+    "react-native-vector-icons": "^7.1.0",
+    "react-native-video": "^5.0.2",
+    "react-native-webview": "^11.6.4",
+    "react-redux": "^7.0.0",
+    "redux": "^4.0.5",
+    "uuid": "^9.0.0",
+    "yup": "^0.29.3"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@brandingbrand/fscodestyle": "^10.1.0",
+    "@types/card-validator": "4.1.0",
+    "@types/lodash-es": "^4.17.1",
+    "@types/react": "~16.9.29 ",
+    "@types/react-dom": "16.9.10",
+    "@types/react-native": "^0.63.18",
+    "@types/react-redux": "^7.1.1",
+    "@types/uuid": "^8.3.4",
+    "@types/yup": "^0.29.13",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "husky": "^4.2.5",
+    "jetifier": "^1.6.6",
+    "lint-staged": "^7.0.4",
+    "metro-react-native-babel-preset": "^0.70.3",
+    "npm-run-all": "^4.1.5",
+    "tslint": "^5.11.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^4.0.2"
+  },
+  "resolutions": {
+    "react-native-svg": "^12.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "yarn lint"
+    ]
+  },
+  "husky": {
+    "hooks": {
+    }
+  },
+  "babel": {
+    "presets": [
+      "module:metro-react-native-babel-preset"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "root": [
+            "./"
+          ],
+          "alias": {
+            "@assos": "./src",
+            "@assets": "./assets"
+          }
+        }
+      ]
+    ]
+  }
+}

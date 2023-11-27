@@ -1,0 +1,65 @@
+diff --git a/node_modules/xcode/lib/pbxProject.js b/node_modules/xcode/lib/pbxProject.js
+index 068548a..ef69e35 100644
+--- a/node_modules/xcode/lib/pbxProject.js
++++ b/node_modules/xcode/lib/pbxProject.js
+@@ -157,7 +157,7 @@ pbxProject.prototype.removeProductFile = function(path, opt) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.addSourceFile = function (path, opt, group) {
++pbxProject.prototype.addSourceFile = function (path, opt, group, name) {
+     var file;
+     if (group) {
+         file = this.addFile(path, group, opt);
+@@ -173,6 +173,7 @@ pbxProject.prototype.addSourceFile = function (path, opt, group) {
+ 
+     this.addToPbxBuildFileSection(file);        // PBXBuildFile
+     this.addToPbxSourcesBuildPhase(file);       // PBXSourcesBuildPhase
++    this.addToSourcesPbxGroup(file, name);
+ 
+     return file;
+ }
+@@ -206,13 +207,15 @@ pbxProject.prototype.removeSourceFile = function (path, opt, group) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.addHeaderFile = function (path, opt, group) {
++pbxProject.prototype.addHeaderFile = function (path, opt, group, name) {
++    var file;
+     if (group) {
+-        return this.addFile(path, group, opt);
++        file = this.addFile(path, group, opt);
+     }
+     else {
+-        return this.addPluginFile(path, opt);
++        file = this.addPluginFile(path, opt);
+     }
++    return this.addToSourcesPbxGroup(file, name);
+ }
+ 
+ /**
+@@ -742,6 +745,15 @@ pbxProject.prototype.addToPbxSourcesBuildPhase = function(file) {
+     sources.files.push(pbxBuildPhaseObj(file));
+ }
+ 
++pbxProject.prototype.addToSourcesPbxGroup = function(file, name) {
++    var pluginsGroup = this.pbxGroupByName(name);
++    if (!pluginsGroup) {
++        this.addPbxGroup([file.path], name);
++    } else {
++        pluginsGroup.children.push(pbxGroupChild(file));
++    }
++}
++
+ pbxProject.prototype.removeFromPbxSourcesBuildPhase = function(file) {
+ 
+     var sources = this.pbxSourcesBuildPhaseObj(file.target), i;
+@@ -1679,7 +1691,7 @@ function correctForFrameworksPath(file, project) {
+ function correctForPath(file, project, group) {
+     var r_group_dir = new RegExp('^' + group + '[\\\\/]');
+ 
+-    if (project.pbxGroupByName(group).path)
++    if (project.pbxGroupByName(group) && project.pbxGroupByName(group).path)
+         file.path = file.path.replace(r_group_dir, '');
+ 
+     return file;
