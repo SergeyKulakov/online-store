@@ -1,8 +1,5 @@
-# Assos Application
-> Branding Brand ❤️ Assos
+# Online store
 
-## Travis Status
-[![Build Status](https://app.travis-ci.com/brandingbrand/assos.svg?token=gkr8jrBqzNpom9gSwCsT&branch=develop)](https://app.travis-ci.com/brandingbrand/assos)
 
 ## Quick Start
 
